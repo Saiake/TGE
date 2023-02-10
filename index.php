@@ -270,23 +270,24 @@ class ExcelReader {
         }
     }
 
-    private function sort_func($a, $b)
+    private static function sort_func($a, $b)
     {
-        if ($a == 'Legendary' && $b == 'Epic') return true;
-        if ($a == 'Legendary' && $b == 'Rare') return true;
-        if ($a == 'Legendary' && $b == 'Uncommon') return true;
-        if ($a == 'Legendary' && $b == 'Common') return true;
-
-        if ($a == 'Epic' && $b == 'Rare') return true;
-        if ($a == 'Epic' && $b == 'Uncommon') return true;
-        if ($a == 'Epic' && $b == 'Common') return true;
-
-        if ($a == 'Rare' && $b == 'Uncommon') return true;
-        if ($a == 'Rare' && $b == 'Common') return true;
-
-        if ($a == 'Uncommon' && $b == 'Common') return true;
-
-        return false;
+        if ($a == 'Legendary' && $b == 'Epic') return 1;
+        if ($a == 'Legendary' && $b == 'Rare') return 1;
+        if ($a == 'Legendary' && $b == 'Uncommon') return 1;
+        if ($a == 'Legendary' && $b == 'Common') return 1;
+        if ($a == 'Legendary' && $b == 'Legendary') return 0;
+        if ($a == 'Epic' && $b == 'Rare') return 1;
+        if ($a == 'Epic' && $b == 'Uncommon') return 1;
+        if ($a == 'Epic' && $b == 'Common') return 1;
+        if ($a == 'Epic' && $b == 'Epic') return 0;
+        if ($a == 'Rare' && $b == 'Uncommon') return 1;
+        if ($a == 'Rare' && $b == 'Common') return 1;
+        if ($a == 'Rare' && $b == 'Rare') return 0;
+        if ($a == 'Uncommon' && $b == 'Common') return 1;
+        if ($a == 'Uncommon' && $b == 'Uncommon') return 0;
+        if ($a == 'Common' && $b == 'Common') return 0;
+        return -1;
     }
 
     private static function sortByPrice($unsorted)
@@ -296,7 +297,11 @@ class ExcelReader {
         {
             for ($j = 0; $j < count($unsorted[$i]); $j++)
             {
-                uasort($unsorted[$i], 'sort_func');
+                for ($k = 0; $k < count($unsorted[$i][$k]); $k++)
+                {
+                    print_r($unsorted[$i]);
+                    uksort($unsorted[$i], array('ExcelReader', 'sort_func'));
+                }
             }
         }
     }
@@ -310,7 +315,7 @@ ExcelReader::getPrices($filePath);
 ExcelReader::getData($filePath);
 
 $target = array(20,30,40);
-print_r(ExcelReader::canBuy(ExcelReader::$mainArray, $target, array(23, 50, 69)));
+ExcelReader::canBuy(ExcelReader::$mainArray, $target, array(23, 50, 69));
 
 $bot->onCommand('start', function(Nutgram $bot) {
     $bot->sendMessage('Ciao!');
