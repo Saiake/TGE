@@ -63,7 +63,7 @@ class ExcelReader
     public static function canBuy($candidates, $params, $wanted)
     {
         $sum = [];
-
+        print_r($params);
         for ($i = 0; $i < count($params); $i++) {
             $sum[$i] = $wanted[$i] - $params[$i];
         }
@@ -72,7 +72,7 @@ class ExcelReader
         $subList = [];
 
         ExcelReader::doNext(0, $result, 0, $candidates, $sum[0], $sum[1], $sum[2], $subList);
-        ExcelReader::sort($result);
+        $result = ExcelReader::sort($result);
 
         return $result;
     }

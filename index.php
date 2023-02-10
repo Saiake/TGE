@@ -4,7 +4,6 @@ use SergiX44\Nutgram\Conversations\Conversation;
 use \SergiX44\Nutgram\Nutgram;
 
 require 'vendor/autoload.php';
-
 require('ExcelReader.php');
 
 set_time_limit(0);
@@ -44,7 +43,7 @@ class MyConversation extends Conversation {
         }
         
         if (!array_key_exists(0, $this->params)) 
-        array_push($this->params, (int)$bot->message()->text);
+            array_push($this->params, (int)$bot->message()->text);
         
         $this->flag = false;
         
@@ -153,9 +152,30 @@ class MyConversation extends Conversation {
         
         $this->flag = false;
         
-        $bot->sendMessage('Закрытие');
+        $result = ExcelReader::canBuy(ExcelReader::$mainArray, $this->params, $this->wanted);
+
+        $bot->sendMessage($this->name . " может надеть на себя:");
+
+        $message = '';
+
+        for ($j = 0; $j < count($result); $j++) 
+        {
+            
+            for ($i = 0; $i < count($result[$j]) - 1; $i++)
+            {
+                $message = $message . $result[$j][$i][0] .'-' . $result[$j][$i][1] . '-' . $result[$j][$i][2]. ' ' . $result[$j][$i]['type'] . ' ';
+            }
+
+            $message = $message . '~ Price ' . $result[$j]['price'];
+
+            $bot->sendMessage($message);
+
+            $message = '';
+        }
         
-        $this->end();
+        $bot->sendMessage("Примечание: Цена указана приблизительная, и приведена для сравнения в качестве ориентира на общую стоимость, она не всегда будет совпадать с действительной ценой на маркете! Рекомендуем зайти на маркет и промониторить цены в ручную.");
+
+        $this->end();        
     }
 }
 
@@ -166,14 +186,11 @@ $filePath = "./sales.xlsx";
 ExcelReader::getPrices($filePath);
 ExcelReader::getData($filePath);
 
-$target = array(20,30,40);
-ExcelReader::canBuy(ExcelReader::$mainArray, $target, array(23, 50, 69));
+$bot->onCommand('start', MyConversation::class);
 
-$bot->onCommand('start', function(Nutgram $bot) {
-    $bot->sendMessage('Ciao!');
+$bot->fallback(function (Nutgram $bot) {
+    $bot->sendMessage('Я вас не понимаю! /start для начала!');
 });
-
-$bot->onCommand('test', MyConversation::class);
 
 $bot->run();
 ?>
