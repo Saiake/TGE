@@ -240,7 +240,7 @@ class ExcelReader {
                         $subArr
                     ) 
     {
-        if ($target == 0 && $count == 6)
+        if ($target == 0)
         {
         $subList = [];
         
@@ -249,7 +249,7 @@ class ExcelReader {
         
         $result[] = $subList;
         } 
-        else if ($target > 0 && $count <=6) 
+        else if ($target > 0 && $count <6) 
         {
             foreach ($candidates as $key => $value)
             {
