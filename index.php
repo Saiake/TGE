@@ -5,6 +5,8 @@ use \SergiX44\Nutgram\Nutgram;
 
 require 'vendor/autoload.php';
 
+require('ExcelReader.php');
+
 set_time_limit(0);
 
 class MyConversation extends Conversation {
