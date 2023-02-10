@@ -226,12 +226,12 @@ class ExcelReader {
         $result = [];
         $subList = [];
         
-        doNext(0, $result, 0, $candidates, $sum, $subList);
+        ExcelReader::doNext(0, $result, 0, $candidates, $sum, $subList);
         
         return $result;
     }
 
-    function doNext(
+    private static function doNext(
                         int $i,
                         &$result,
                         int $count,
@@ -240,7 +240,7 @@ class ExcelReader {
                         $subArr
                     ) 
     {
-        if ($target == 0)
+        if ($target == 0 && $count == 6)
         {
         $subList = [];
         
@@ -248,18 +248,20 @@ class ExcelReader {
             array_push($subList, $subArr[$k]);
         
         $result[] = $subList;
-        print_r($result);
         } 
-        else if ($target > 0) 
+        else if ($target > 0 && $count <=6) 
         {
-            for ($j = $i, $l = count($candidates); $j < $l; $j++) 
+            foreach ($candidates as $key => $value)
             {
-                array_push($subArr, $candidates[$j]);
-                
-                doNext($j, $result, $count + 1, $candidates, $target - $candidates[$j], $subArr);
-                
-                unset($subArr[count($subArr) - 1]);
-                $subArr = array_values($subArr);
+                for ($j = $i, $l = count($value[0]); $j < $l; $j++) 
+                {
+                    array_push($subArr, $value[0][$j]);
+              
+                    ExcelReader::doNext($j, $result, $count + 1, $candidates, $target - $value[0][$j], $subArr);
+                    
+                    unset($subArr[count($subArr) - 1]);
+                    $subArr = array_values($subArr);
+                }
             }
         }
     }
@@ -271,7 +273,8 @@ $filePath = "./sales.xlsx";
 
 ExcelReader::getPrices($filePath);
 ExcelReader::getData($filePath);
-
+$target = array(20,30,40);
+print_r(ExcelReader::canBuy(ExcelReader::$mainArray, $target, [30, 50, 69]));
 $bot->onCommand('start', function(Nutgram $bot) {
     $bot->sendMessage('Ciao!');
 });
