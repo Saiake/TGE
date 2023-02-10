@@ -226,8 +226,9 @@ class ExcelReader {
         $result = [];
         $subList = [];
         
-        ExcelReader::doNext(0, $result, 0, $candidates, $sum, $subList);
-        
+        ExcelReader::doNext(0, $result, 0, $candidates, $sum[0], $sum[1], $sum[2], $subList);
+        ExcelReader::sortByPrice($result);
+
         return $result;
     }
 
@@ -236,32 +237,66 @@ class ExcelReader {
                         &$result,
                         int $count,
                         $candidates,
-                        $target,
+                        $target1,
+                        $target2,
+                        $target3,
                         $subArr
                     ) 
     {
-        if ($target == 0)
+        if ($target1 == 0 && $target2 == 0 && $target3 == 0)
         {
         $subList = [];
         
         for ($k = 0; $k < $count; $k++) 
             array_push($subList, $subArr[$k]);
         
-        $result[] = $subList;
+        array_push($result, $subList);
         } 
-        else if ($target > 0 && $count <6) 
+        else if ($target1 > 0 && $target2 > 0 && $target3 > 0 && $count < 6) 
         {
             foreach ($candidates as $key => $value)
             {
                 for ($j = $i, $l = count($value[0]); $j < $l; $j++) 
                 {
-                    array_push($subArr, $value[0][$j]);
-              
-                    ExcelReader::doNext($j, $result, $count + 1, $candidates, $target - $value[0][$j], $subArr);
+                    $subArr[] = [$key=>array($value[0][$j], $value[1][$j], $value[2][$j])];
+                    
+                    ExcelReader::doNext($j, $result, $count + 1, $candidates, 
+                    $target1 - $value[0][$j], $target2 - $value[1][$j], $target3 - $value[2][$j], $subArr);
                     
                     unset($subArr[count($subArr) - 1]);
                     $subArr = array_values($subArr);
                 }
+            }
+        }
+    }
+
+    private function sort_func($a, $b)
+    {
+        if ($a == 'Legendary' && $b == 'Epic') return true;
+        if ($a == 'Legendary' && $b == 'Rare') return true;
+        if ($a == 'Legendary' && $b == 'Uncommon') return true;
+        if ($a == 'Legendary' && $b == 'Common') return true;
+
+        if ($a == 'Epic' && $b == 'Rare') return true;
+        if ($a == 'Epic' && $b == 'Uncommon') return true;
+        if ($a == 'Epic' && $b == 'Common') return true;
+
+        if ($a == 'Rare' && $b == 'Uncommon') return true;
+        if ($a == 'Rare' && $b == 'Common') return true;
+
+        if ($a == 'Uncommon' && $b == 'Common') return true;
+
+        return false;
+    }
+
+    private static function sortByPrice($unsorted)
+    {
+        $sorted = [];
+        for ($i = 0; $i < count($unsorted); $i++)
+        {
+            for ($j = 0; $j < count($unsorted[$i]); $j++)
+            {
+                uasort($unsorted[$i], 'sort_func');
             }
         }
     }
@@ -273,8 +308,10 @@ $filePath = "./sales.xlsx";
 
 ExcelReader::getPrices($filePath);
 ExcelReader::getData($filePath);
+
 $target = array(20,30,40);
-print_r(ExcelReader::canBuy(ExcelReader::$mainArray, $target, [30, 50, 69]));
+print_r(ExcelReader::canBuy(ExcelReader::$mainArray, $target, array(23, 50, 69)));
+
 $bot->onCommand('start', function(Nutgram $bot) {
     $bot->sendMessage('Ciao!');
 });
