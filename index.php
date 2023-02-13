@@ -4,7 +4,7 @@ use SergiX44\Nutgram\Conversations\Conversation;
 use \SergiX44\Nutgram\Nutgram;
 
 require 'vendor/autoload.php';
-require('ExcelReader.php');
+require './ExcelReader.php';
 
 set_time_limit(0);
 
@@ -153,27 +153,34 @@ class MyConversation extends Conversation {
         $this->flag = false;
         
         $result = ExcelReader::canBuy(ExcelReader::$mainArray, $this->params, $this->wanted);
-
-        $bot->sendMessage($this->name . " может надеть на себя:");
-
-        $message = '';
-
-        for ($j = 0; $j < count($result); $j++) 
+        if (!empty($result))
         {
-            
-            for ($i = 0; $i < count($result[$j]) - 1; $i++)
-            {
-                $message = $message . $result[$j][$i][0] .'-' . $result[$j][$i][1] . '-' . $result[$j][$i][2]. ' ' . $result[$j][$i]['type'] . ' ';
-            }
-
-            $message = $message . '~ Price ' . $result[$j]['price'];
-
-            $bot->sendMessage($message);
+            $bot->sendMessage($this->name . " может надеть на себя:");
 
             $message = '';
+    
+            for ($j = 0; $j < count($result); $j++) 
+            {   
+                for ($i = 0; $i < count($result[$j]) - 1; $i++)
+                {
+                    $message = $message . $result[$j][$i][0] .'-' . $result[$j][$i][1] . '-' . $result[$j][$i][2]. ' ' . $result[$j][$i]['type'] . ' ';
+                }
+    
+                $message = $message . '~ Price ' . $result[$j]['price'];
+    
+                $bot->sendMessage($message);
+    
+                $message = '';
+    
+                usleep(10000);
+            }
+            
+            $bot->sendMessage("Примечание: Цена указана приблизительная, и приведена для сравнения в качестве ориентира на общую стоимость, она не всегда будет совпадать с действительной ценой на маркете! Рекомендуем зайти на маркет и промониторить цены в ручную.");    
         }
-        
-        $bot->sendMessage("Примечание: Цена указана приблизительная, и приведена для сравнения в качестве ориентира на общую стоимость, она не всегда будет совпадать с действительной ценой на маркете! Рекомендуем зайти на маркет и промониторить цены в ручную.");
+        else
+        {
+            $bot->sendMessage("К сожалению, добиться такого результата невозможно, попробуйте ещё раз!");
+        }
 
         $this->end();        
     }

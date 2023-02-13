@@ -2,5 +2,10 @@
     "require": {
         "nutgram/nutgram": "^3.12",
         "phpoffice/phpspreadsheet": "^1.27"
+    },
+    "config": {
+
+        "platform-check": false
     }
 }
+    

@@ -63,7 +63,7 @@ class ExcelReader
     public static function canBuy($candidates, $params, $wanted)
     {
         $sum = [];
-        print_r($params);
+
         for ($i = 0; $i < count($params); $i++) {
             $sum[$i] = $wanted[$i] - $params[$i];
         }
@@ -73,7 +73,24 @@ class ExcelReader
 
         ExcelReader::doNext(0, $result, 0, $candidates, $sum[0], $sum[1], $sum[2], $subList);
         $result = ExcelReader::sort($result);
-
+        
+        $j = 1;
+        $resultCount = count($result);
+        
+        while ($j < $resultCount) 
+        {
+            if ($result[$j]['price'] == $result[$j - 1]['price'])
+            {
+                unset($result[$j]);
+             
+                $result = array_values($result);
+                $resultCount = count($result);
+                $j = 0;
+            }
+            
+            $j++;
+        }
+        
         return $result;
     }
 
@@ -95,16 +112,26 @@ class ExcelReader
                 array_push($subList, $subArr[$k]);
 
             array_push($result, $subList);
-        } else if ($target1 > 0 && $target2 > 0 && $target3 > 0 && $count < 6) {
-            foreach ($candidates as $key => $value) {
-                for ($j = $i, $l = count($value[0]); $j < $l; $j++) {
+        } 
+        else if (
+            ($target1 > 0 && $target2 == 0 && $target3 == 0) 
+            || ($target1 == 0 && $target2 > 0 && $target3 == 0)
+            || ($target1 == 0 && $target2 == 0 && $target3 > 0)
+            || ($target1 > 0 && $target2 > 0 && $target3 > 0)
+            && $count < 6
+            ) 
+        {
+            foreach ($candidates as $key => $value) 
+            {
+                for ($j = $i, $l = count($value[0]); $j < $l; $j++) 
+                {
                     $subArr[] = [
                         'type' => $key,
                         $value[0][$j],
                         $value[1][$j],
                         $value[2][$j]
                     ];
-
+                    
                     ExcelReader::doNext(
                         $j,
                         $result, $count + 1,
