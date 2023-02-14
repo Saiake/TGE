@@ -114,11 +114,10 @@ class ExcelReader
             array_push($result, $subList);
         } 
         else if (
-            ($target1 > 0 && $target2 == 0 && $target3 == 0) 
-            || ($target1 == 0 && $target2 > 0 && $target3 == 0)
-            || ($target1 == 0 && $target2 == 0 && $target3 > 0)
-            || ($target1 > 0 && $target2 > 0 && $target3 > 0)
-            && $count < 6
+            ($target1 > 0 && $target2 == 0 && $target3 == 0 && $count < 6) 
+            || ($target1 == 0 && $target2 > 0 && $target3 == 0 && $count < 6)
+            || ($target1 == 0 && $target2 == 0 && $target3 > 0 && $count < 6)
+            || ($target1 > 0 && $target2 > 0 && $target3 > 0 && $count < 6)
             ) 
         {
             foreach ($candidates as $key => $value) 
