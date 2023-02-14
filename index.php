@@ -186,7 +186,7 @@ class MyConversation extends Conversation {
     }
 }
 
-$bot = new Nutgram("6034191716:AAEMdbm9eJGn4-0C9r0UzLcZOw7JWqEC4Vw");
+$bot = new Nutgram("TOKEN");
 
 $filePath = "./sales.xlsx";
 
