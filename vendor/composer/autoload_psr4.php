@@ -7,6 +7,10 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'ZipStream\\' => array($vendorDir . '/maennchen/zipstream-php/src'),
+    'Symfony\\Contracts\\Service\\' => array($vendorDir . '/symfony/service-contracts'),
+    'Symfony\\Contracts\\Cache\\' => array($vendorDir . '/symfony/cache-contracts'),
+    'Symfony\\Component\\VarExporter\\' => array($vendorDir . '/symfony/var-exporter'),
+    'Symfony\\Component\\Cache\\' => array($vendorDir . '/symfony/cache'),
     'SergiX44\\Nutgram\\' => array($vendorDir . '/nutgram/nutgram/src'),
     'SergiX44\\Hydrator\\' => array($vendorDir . '/nutgram/hydrator/src'),
     'Psr\\SimpleCache\\' => array($vendorDir . '/psr/simple-cache/src'),
@@ -14,6 +18,7 @@ return array(
     'Psr\\Http\\Message\\' => array($vendorDir . '/psr/http-factory/src', $vendorDir . '/psr/http-message/src'),
     'Psr\\Http\\Client\\' => array($vendorDir . '/psr/http-client/src'),
     'Psr\\Container\\' => array($vendorDir . '/psr/container/src'),
+    'Psr\\Cache\\' => array($vendorDir . '/psr/cache/src'),
     'PhpOffice\\PhpSpreadsheet\\' => array($vendorDir . '/phpoffice/phpspreadsheet/src/PhpSpreadsheet'),
     'MyCLabs\\Enum\\' => array($vendorDir . '/myclabs/php-enum/src'),
     'Matrix\\' => array($vendorDir . '/markbaker/matrix/classes/src'),

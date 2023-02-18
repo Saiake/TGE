@@ -21,6 +21,10 @@ class ComposerStaticInitb96343564b7e29e32f647baf56f704af
         ),
         'S' => 
         array (
+            'Symfony\\Contracts\\Service\\' => 26,
+            'Symfony\\Contracts\\Cache\\' => 24,
+            'Symfony\\Component\\VarExporter\\' => 30,
+            'Symfony\\Component\\Cache\\' => 24,
             'SergiX44\\Nutgram\\' => 17,
             'SergiX44\\Hydrator\\' => 18,
         ),
@@ -31,6 +35,7 @@ class ComposerStaticInitb96343564b7e29e32f647baf56f704af
             'Psr\\Http\\Message\\' => 17,
             'Psr\\Http\\Client\\' => 16,
             'Psr\\Container\\' => 14,
+            'Psr\\Cache\\' => 10,
             'PhpOffice\\PhpSpreadsheet\\' => 25,
         ),
         'M' => 
@@ -64,6 +69,22 @@ class ComposerStaticInitb96343564b7e29e32f647baf56f704af
         array (
             0 => __DIR__ . '/..' . '/maennchen/zipstream-php/src',
         ),
+        'Symfony\\Contracts\\Service\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/service-contracts',
+        ),
+        'Symfony\\Contracts\\Cache\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/cache-contracts',
+        ),
+        'Symfony\\Component\\VarExporter\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/var-exporter',
+        ),
+        'Symfony\\Component\\Cache\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/cache',
+        ),
         'SergiX44\\Nutgram\\' => 
         array (
             0 => __DIR__ . '/..' . '/nutgram/nutgram/src',
@@ -92,6 +113,10 @@ class ComposerStaticInitb96343564b7e29e32f647baf56f704af
         'Psr\\Container\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/container/src',
+        ),
+        'Psr\\Cache\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/psr/cache/src',
         ),
         'PhpOffice\\PhpSpreadsheet\\' => 
         array (
@@ -148,6 +173,7 @@ class ComposerStaticInitb96343564b7e29e32f647baf56f704af
     public static $classMap = array (
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
         'Stringable' => __DIR__ . '/..' . '/myclabs/php-enum/stubs/Stringable.php',
+        '©' => __DIR__ . '/..' . '/symfony/cache/Traits/ValueWrapper.php',
     );
 
     public static function getInitializer(ClassLoader $loader)

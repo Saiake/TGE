@@ -1,11 +1,11 @@
 {
     "require": {
         "nutgram/nutgram": "^3.12",
-        "phpoffice/phpspreadsheet": "^1.27"
+        "phpoffice/phpspreadsheet": "^1.27",
+        "symfony/cache": "^6.2"
     },
     "config": {
 
         "platform-check": false
     }
 }
-    
