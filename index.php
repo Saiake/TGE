@@ -1,7 +1,11 @@
 <?php
 
 use SergiX44\Nutgram\Conversations\Conversation;
-use \SergiX44\Nutgram\Nutgram;
+use SergiX44\Nutgram\Nutgram;
+use SergiX44\Nutgram\Telegram\Attributes\UpdateTypes;
+
+use SergiX44\Nutgram\Telegram\Types\Keyboard\KeyboardButton;
+use SergiX44\Nutgram\Telegram\Types\Keyboard\ReplyKeyboardMarkup;
 
 require 'vendor/autoload.php';
 require './ExcelReader.php';
@@ -9,7 +13,7 @@ require './ExcelReader.php';
 set_time_limit(0);
 
 class MyConversation extends Conversation {
-    private bool $flag; 
+    private bool $flag = false; 
 
     public string $name;
     public $params = [];
@@ -25,8 +29,8 @@ class MyConversation extends Conversation {
     {
         $this->name = $bot->message()->text;
         $this->flag = false;
-        
-        $bot->sendMessage('Введите имеющееся значение силы');
+
+        $bot->sendMessage('Введите <b>имеющееся</b> значение силы', ['parse_mode'=>"html"]);
         
         $this->next('staminaStep');
     }
@@ -47,7 +51,7 @@ class MyConversation extends Conversation {
         
         $this->flag = false;
         
-        $bot->sendMessage('Введите имеющееся значение стамины');
+        $bot->sendMessage('Введите <b>имеющееся</b> значение стамины', ['parse_mode'=>"html"]);
         
         $this->next('speedStep');
     }
@@ -68,7 +72,7 @@ class MyConversation extends Conversation {
         
         $this->flag = false;
         
-        $bot->sendMessage('Введите имеющееся значение скорости');
+        $bot->sendMessage('Введите <b>имеющееся</b> значение скорости', ['parse_mode'=>"html"]);
         
         $this->next('wPowerStep');
     }
@@ -89,7 +93,7 @@ class MyConversation extends Conversation {
         
         $this->flag = false;
         
-        $bot->sendMessage('Введите желаемое значение силы');
+        $bot->sendMessage('Введите <b>желаемое</b> значение силы', ['parse_mode'=>"html"]);
         
         $this->next('wStaminaStep');
     }
@@ -110,7 +114,7 @@ class MyConversation extends Conversation {
         
         $this->flag = false;
         
-        $bot->sendMessage('Введите желаемое значение стамины');
+        $bot->sendMessage('Введите <b>желаемое</b> значение стамины', ['parse_mode'=>"html"]);
         
         $this->next('wSpeedStep');
     }
@@ -131,7 +135,7 @@ class MyConversation extends Conversation {
         
         $this->flag = false;
         
-        $bot->sendMessage('Введите желаемое значение скорости');
+        $bot->sendMessage('Введите <b>желаемое</b> значение скорости', ['parse_mode'=>"html"]);
         
         $this->next('lastStep');
     }
@@ -152,10 +156,11 @@ class MyConversation extends Conversation {
         
         $this->flag = false;
         
-        $result = ExcelReader::canBuy(ExcelReader::$mainArray, $this->params, $this->wanted);
+        $result =(new ExcelReader())->canBuy(ExcelReader::$mainArray, $this->params, $this->wanted);
+
         if (!empty($result))
         {
-            $bot->sendMessage($this->name . " может надеть на себя:");
+            $bot->sendMessage('<b>'. $this->name . '</b>' . " может надеть на себя:", ['parse_mode'=>"html"]);
 
             $message = '';
     
@@ -166,9 +171,9 @@ class MyConversation extends Conversation {
                     $message = $message . $result[$j][$i][0] .'-' . $result[$j][$i][1] . '-' . $result[$j][$i][2]. ' ' . $result[$j][$i]['type'] . ' ';
                 }
     
-                $message = $message . '~ Price ' . $result[$j]['price'];
+                $message = $message . '~ Price <b>' . $result[$j]['price'] . '</b>';
     
-                $bot->sendMessage($message);
+                $bot->sendMessage($message, ['parse_mode'=>"html"]);
     
                 $message = '';
     
@@ -186,16 +191,25 @@ class MyConversation extends Conversation {
     }
 }
 
-$bot = new Nutgram("TOKEN");
+$bot = new Nutgram("6034191716:AAEMdbm9eJGn4-0C9r0UzLcZOw7JWqEC4Vw");
 
 $filePath = "./sales.xlsx";
 
 ExcelReader::getPrices($filePath);
 ExcelReader::getData($filePath);
 
-$bot->onCommand('start', MyConversation::class);
+$bot->onCommand('start', function(Nutgram $bot){
+    $bot->sendMessage('Welcome!', [     
+        'reply_markup' => ReplyKeyboardMarkup::make(resize_keyboard: true)->addRow(
+            KeyboardButton::make("h"),
+            KeyboardButton::make('Give me animal!'),
+        )
+    ]);
+});
 
-$bot->fallback(function (Nutgram $bot) {
+$bot->onText('h', MyConversation::class);
+
+$bot->fallbackOn(UpdateTypes::MESSAGE ,function (Nutgram $bot) {
     $bot->sendMessage('Я вас не понимаю! /start для начала!');
 });
 

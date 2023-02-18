@@ -11,7 +11,7 @@ class ExcelReader
 
         $spreadsheet = $reader->load($filePath);
 
-        return $worksheet = $spreadsheet->getActiveSheet();
+        return $spreadsheet->getActiveSheet();
     }
 
     public static $prices = [];
@@ -60,7 +60,7 @@ class ExcelReader
         }
     }
 
-    public static function canBuy($candidates, $params, $wanted)
+    public function canBuy($candidates, $params, $wanted)
     {
         $sum = [];
 
@@ -71,30 +71,13 @@ class ExcelReader
         $result = [];
         $subList = [];
 
-        ExcelReader::doNext(0, $result, 0, $candidates, $sum[0], $sum[1], $sum[2], $subList);
-        $result = ExcelReader::sort($result);
-        
-        $j = 1;
-        $resultCount = count($result);
-        
-        while ($j < $resultCount) 
-        {
-            if ($result[$j]['price'] == $result[$j - 1]['price'])
-            {
-                unset($result[$j]);
-             
-                $result = array_values($result);
-                $resultCount = count($result);
-                $j = 0;
-            }
-            
-            $j++;
-        }
+        $this->doNext(0, $result, 0, $candidates, $sum[0], $sum[1], $sum[2], $subList);
+        $result = $this->sort($result);
         
         return $result;
     }
 
-    private static function doNext(
+    private function doNext(
         int $i,
         &$result,
         int $count,
@@ -112,7 +95,9 @@ class ExcelReader
                 array_push($subList, $subArr[$k]);
 
             array_push($result, $subList);
+            $this->addPriceInUnsortedElements($result);
         } 
+
         else if (
             ($target1 > 0 && $target2 == 0 && $target3 == 0 && $count < 6) 
             || ($target1 == 0 && $target2 > 0 && $target3 == 0 && $count < 6)
@@ -131,9 +116,10 @@ class ExcelReader
                         $value[2][$j]
                     ];
                     
-                    ExcelReader::doNext(
+                    $this->doNext(
                         $j,
-                        $result, $count + 1,
+                        $result, 
+                        $count + 1,
                         $candidates,
                         $target1 - $value[0][$j], $target2 - $value[1][$j], $target3 - $value[2][$j],
                         $subArr
@@ -144,6 +130,11 @@ class ExcelReader
                 }
             }
         }
+        else if ($target1 > 0 && $target2 > 0 && $target3 > 0 && $count == 6)
+        {
+            return;
+        }
+        
     }
 
     private static function sort_func($firstElement, $secondElement)
@@ -170,13 +161,33 @@ class ExcelReader
         }
     }
 
-    private static function sort($unsorted)
+    private function sort($unsorted)
     {
-        for ($i = 0; $i < count($unsorted); $i++) {
-            uasort($unsorted[$i], array('ExcelReader', 'sort_func'));
-        }
-        static::addPriceInUnsortedElements($unsorted);
         uasort($unsorted, ['ExcelReader', 'sortByPrice']);
+        
+        $j = 1;
+        $resultCount = count($unsorted);
+       
+        while ($j < $resultCount) 
+        {
+            if ($unsorted[$j]['price'] == $unsorted[$j - 1]['price'])
+            {
+                unset($unsorted[$j]);
+             
+                $unsorted = array_values($unsorted);
+                $resultCount = count($unsorted);
+                $j = 0;
+            }
+            
+            $j++;
+        }
+
+        for ($i = 0; $i < count($unsorted); $i++) {
+            if (!$unsorted[$i]['price'])
+                uasort($unsorted[$i], array('ExcelReader', 'sort_func'));
+        }
+        
+
         return $unsorted;
     }
 
@@ -190,14 +201,17 @@ class ExcelReader
             return 0;
         }
     }
-    private static function addPriceInUnsortedElements(&$unsortedWithPrice)
+
+    private function addPriceInUnsortedElements(&$unsortedWithPrice)
     {
-        foreach ($unsortedWithPrice as $kitKey => $kit) {
+        for ($i = 0; $i < count($unsortedWithPrice); $i++)
+        {
             $price = 0;
-            foreach ($kit as $item) {
-                $price += static::$prices[$item['type']];
+            for ($j = 0; $j < count($unsortedWithPrice[$i]) - 1; $j++) 
+            {
+                $price += static::$prices[$unsortedWithPrice[$i][$j]['type']];
             }
-            $unsortedWithPrice[$kitKey]['price'] = $price;
+            $unsortedWithPrice[$i]['price'] = $price;
         }
     }
 }

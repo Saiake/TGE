@@ -1,11 +1,15 @@
 {
     "require": {
         "nutgram/nutgram": "^3.12",
-        "phpoffice/phpspreadsheet": "^1.27"
+        "phpoffice/phpspreadsheet": "^1.27",
+        "ext-pcntl": "*",
+        "ext-posix": "*",
+        "nutgram/async": "dev-master",
+        "spatie/fork": "^1.1",
+        "illuminate/support": "^10.0"
     },
     "config": {
 
         "platform-check": false
     }
 }
-    
