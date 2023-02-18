@@ -184,7 +184,7 @@ $psr6Cache = new FilesystemAdapter();
 $psr16Cache = new Psr16Cache($psr6Cache);
 
 $bot = new Nutgram(
-    '5426121582:AAFDaFGcrclf7I9mkKKxwbXewfQTwoOaJuw',
+    'TOKEN',
     [
         'cache' => $psr16Cache
     ]
